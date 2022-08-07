@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Facade\FlareClient\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

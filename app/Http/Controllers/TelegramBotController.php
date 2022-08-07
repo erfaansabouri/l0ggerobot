@@ -31,18 +31,18 @@ class TelegramBotController extends Controller
             $crawler->setPerPage(10);
             $medias = $crawler->images();
             $results_count = collect($medias->data)->count();
-            $image_url = $medias->data[rand(0,$results_count-1)]->assets->preview->url;
-            $image_description = $medias->data[rand(0,$results_count-1)]->description;
+            $image_url = @$medias->data[rand(0,$results_count-1)]->assets->preview->url;
+            $image_description = @$medias->data[rand(0,$results_count-1)]->description;
             // send message
-            $telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => $image_url.PHP_EOL.$image_description,
-            ]);
-
-            $telegram->sendPhoto([
-                'chat_id' => $chat_id,
-                'photo' => new InputFile("https://telegram.org/img/t_logo.png"),
-            ]);
+            if (!empty(@$image_url))
+            {
+                $telegram->sendChatAction('upload_photo');
+                $telegram->sendPhoto([
+                    'chat_id' => $chat_id,
+                    'photo' => new InputFile($image_url),
+                    'caption' => $image_description,
+                ]);
+            }
         }
     }
 }

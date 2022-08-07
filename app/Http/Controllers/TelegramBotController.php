@@ -33,7 +33,7 @@ class TelegramBotController extends Controller
             $crawler->setPerPage(30);
             $medias = $crawler->images();
             $results_count = collect($medias->data)->count();
-            $image_url = @$medias->data[rand(0,$results_count-1)]->assets->preview->url;
+            $image_url = @$medias->data[rand(0,$results_count-1)]->assets->huge_thumb->url;
             $image_description = @$medias->data[rand(0,$results_count-1)]->description;
             // send message
             if (!empty(@$image_url))

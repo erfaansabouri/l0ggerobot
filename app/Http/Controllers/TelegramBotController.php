@@ -32,11 +32,10 @@ class TelegramBotController extends Controller
             $results_count = collect($medias->data)->count();
             $image_url = $medias->data[rand(0,$results_count)]->assets->preview->url;
             $image_description = $medias->data[rand(0,$results_count)]->description;
-            // send photo
-            $telegram->sendPhoto([
+            // send message
+            $telegram->sendMessage([
                 'chat_id' => $chat_id,
-                'photo' => $image_url,
-                'caption' => $image_description,
+                'text' => $image_url.PHP_EOL.$image_description,
             ]);
         }
     }

@@ -29,7 +29,7 @@ class TelegramBotController extends Controller
             $crawler = new ShutterstockCrawler(env('SHUTTERSTOCK_API'));
             $crawler->setQuery($text);
             $crawler->setPage(1);
-            $crawler->setPerPage(20);
+            $crawler->setPerPage(10);
             $medias = $crawler->images();
             $results_count = collect($medias->data)->count();
             $image_url = @$medias->data[rand(0,$results_count-1)]->assets->preview->url;

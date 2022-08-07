@@ -27,6 +27,8 @@ class TelegramBotController extends Controller
         if (strpos($text, 'img') !== false) {
             $crawler = new ShutterstockCrawler(env('SHUTTERSTOCK_API'));
             $crawler->setQuery('boy');
+            $crawler->setPage(1);
+            $crawler->setPerPage(10);
             $medias = $crawler->images();
             $first_image_url = $medias->data[0]->assets->preview->url;
             $telegram->sendMessage([

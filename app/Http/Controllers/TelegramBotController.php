@@ -12,13 +12,19 @@ class TelegramBotController extends Controller
     public function handler()
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
-        $update = $telegram->getUpdates();
-        $chat_id = $update->getMessage()->getChat()->getId();
-        $text = $update->getMessage()->getText();
-        $reply = 'Hello, '.$text;
+        // get webhookupdates
+        $updates = $telegram->getWebhookUpdates();
+        // get message
+        $message = $updates->getMessage();
+        // get chat id
+        $chat_id = $message->getChat()->getId();
+        // get text
+        $text = $message->getText();
+        // send message
         $telegram->sendMessage([
             'chat_id' => $chat_id,
-            'text' => $reply,
+            'text' => $text
         ]);
+
     }
 }

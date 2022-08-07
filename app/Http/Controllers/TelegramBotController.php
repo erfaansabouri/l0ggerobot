@@ -7,6 +7,7 @@ use App\Crawlers\ShutterstockCrawler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
+use Telegram\Bot\FileUpload\InputFile;
 
 class TelegramBotController extends Controller
 {
@@ -30,12 +31,17 @@ class TelegramBotController extends Controller
             $crawler->setPerPage(10);
             $medias = $crawler->images();
             $results_count = collect($medias->data)->count();
-            $image_url = $medias->data[rand(0,$results_count)]->assets->preview->url;
-            $image_description = $medias->data[rand(0,$results_count)]->description;
+            $image_url = $medias->data[rand(0,$results_count-1)]->assets->preview->url;
+            $image_description = $medias->data[rand(0,$results_count-1)]->description;
             // send message
             $telegram->sendMessage([
                 'chat_id' => $chat_id,
                 'text' => $image_url.PHP_EOL.$image_description,
+            ]);
+
+            $telegram->sendPhoto([
+                'chat_id' => $chat_id,
+                'photo' => new InputFile("https://telegram.org/img/t_logo.png"),
             ]);
         }
     }

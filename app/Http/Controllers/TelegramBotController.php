@@ -36,7 +36,10 @@ class TelegramBotController extends Controller
             // send message
             if (!empty(@$image_url))
             {
-                $telegram->sendChatAction('upload_photo');
+                $telegram->sendChatAction([
+                    'chat_id' => $chat_id,
+                    'action' => 'upload_photo'
+                ]);
                 $telegram->sendPhoto([
                     'chat_id' => $chat_id,
                     'photo' => new InputFile($image_url),

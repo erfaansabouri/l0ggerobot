@@ -23,30 +23,21 @@ class TelegramBotController extends Controller
         $text = $message->getText();
         // send message
 
-        // check if text contains word "img"
-        if (strpos($text, 'img') !== false) {
+        if (stristr($text, 'img') !== false) {
             $crawler = new ShutterstockCrawler(env('SHUTTERSTOCK_API'));
             $crawler->setQuery('boy');
             $crawler->setPage(1);
             $crawler->setPerPage(10);
             $medias = $crawler->images();
-            $first_image_url = $medias->data[0]->assets->preview->url;
-            $telegram->sendMessage([
+            $results_count = collect($medias->data)->count();
+            $image_url = $medias->data[rand(0,$results_count)]->assets->preview->url;
+            $image_description = $medias->data[rand(0,$results_count)]->description;
+            // send photo
+            $telegram->sendPhoto([
                 'chat_id' => $chat_id,
-                'text' => $first_image_url
-            ]);
-        } else {
-            // send message
-            $telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => 'Send me a text with the word "img" to get images.'
+                'photo' => $image_url,
+                'caption' => $image_description,
             ]);
         }
-
-        $telegram->sendMessage([
-            'chat_id' => $chat_id,
-            'text' => $text
-        ]);
-
     }
 }

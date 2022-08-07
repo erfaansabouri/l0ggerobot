@@ -13,8 +13,6 @@ class TelegramBotController extends Controller
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
         $update = $telegram->getUpdates();
-        Log::useDailyFiles(storage_path().'/logs/telegram.log');
-        Log::info($update);
         $chat_id = $update->getMessage()->getChat()->getId();
         $text = $update->getMessage()->getText();
         $reply = 'Hello, '.$text;

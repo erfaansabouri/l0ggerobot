@@ -22,5 +22,6 @@ class DivarPost extends Model
         {
             $text .= '🔖 '.$meta_data[0] . ': ' . $meta_data[1] . PHP_EOL;
         }
+        return $text;
     }
 }

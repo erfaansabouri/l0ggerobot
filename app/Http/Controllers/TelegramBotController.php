@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Crawlers\ShutterstockCrawler;
+use App\Models\DivarPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
@@ -15,39 +16,46 @@ class TelegramBotController extends Controller
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
         // get webhookupdates
+
+        $this->handleDivarCommand($telegram);
+    }
+
+    private function handleDivarCommand($telegram)
+    {
         $updates = $telegram->getWebhookUpdates();
-        // get message
         $message = $updates->getMessage();
-        // get chat id
         $chat_id = $message->getChat()->getId();
-        // get text
         $text = $message->getText();
-        // send message
 
-        if (stristr($text, 'img') !== false) {
-
-            $new_text = str_ireplace('img', '', $text);
-            $crawler = new ShutterstockCrawler(env('SHUTTERSTOCK_API'));
-            $crawler->setQuery($new_text);
-            $crawler->setPage(1);
-            $crawler->setPerPage(30);
-            $medias = $crawler->images();
-            $results_count = collect($medias->data)->count();
-            $image_url = @$medias->data[rand(0,$results_count-1)]->assets->huge_thumb->url;
-            $image_description = @$medias->data[rand(0,$results_count-1)]->description;
-            // send message
-            if (!empty(@$image_url))
+        // if text contains word divar
+        if (stristr($text, 'divar') !== false) {
+            $divar_post = DivarPost::query()
+                ->whereNull('sent_to_telegram_at')
+                ->inRandomOrder()
+                ->first();
+            $telegram->sendChatAction([
+                'chat_id' => $chat_id,
+                'action' => 'typing',
+            ]);
+            if (!empty($divar_post->image))
             {
-                $telegram->sendChatAction([
-                    'chat_id' => $chat_id,
-                    'action' => 'upload_photo'
-                ]);
                 $telegram->sendPhoto([
                     'chat_id' => $chat_id,
-                    'photo' => new InputFile($image_url),
-                    'caption' => $image_description,
+                    'photo' => new InputFile($divar_post->image),
+                    'caption' => $divar_post->title,
                 ]);
             }
+            else
+            {
+                $telegram->sendMessage([
+                    'chat_id' => $chat_id,
+                    'text' => $divar_post->title,
+                ]);
+            }
+
+            $divar_post->update([
+                'sent_to_telegram_at' => now()
+            ]);
         }
     }
 }

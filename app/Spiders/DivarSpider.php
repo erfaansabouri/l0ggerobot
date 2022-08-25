@@ -35,8 +35,7 @@ class DivarSpider extends BasicSpider
     ];
 
     public array $extensions = [
-        LoggerExtension::class,
-        StatsCollectorExtension::class,
+
     ];
 
     public int $concurrency = 2;

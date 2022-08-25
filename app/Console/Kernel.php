@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('roach:divar')->everyMinute();
+        $schedule->command('erfan:divar')->everyMinute();
+
     }
 
     /**

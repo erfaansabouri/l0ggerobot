@@ -15,7 +15,6 @@ class TelegramBotController extends Controller
     public function handler()
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
-        // get webhookupdates
 
         $this->handleDivarCommand($telegram);
     }

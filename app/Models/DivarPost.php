@@ -12,6 +12,15 @@ class DivarPost extends Model
 
     public function telegramText()
     {
-        return "🗃 {$this->title}".PHP_EOL."📍 {$this->subtitle}".PHP_EOL."ℹ️ {$this->description}".PHP_EOL.PHP_EOL;
+        return "🗃 {$this->title}".PHP_EOL."📍 {$this->subtitle}".PHP_EOL."🔵 {$this->description}".PHP_EOL.PHP_EOL.$this->getMetaDataText();
+    }
+
+    public function getMetaDataText()
+    {
+        $text = '';
+        foreach (json_decode($this->meta_data) as $meta_data)
+        {
+            $text .= '🔖 '.$meta_data[0] . ': ' . $meta_data[1] . PHP_EOL;
+        }
     }
 }

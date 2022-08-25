@@ -42,14 +42,14 @@ class TelegramBotController extends Controller
                 $telegram->sendPhoto([
                     'chat_id' => $chat_id,
                     'photo' => new InputFile($divar_post->image),
-                    'caption' => $divar_post->title,
+                    'caption' => $divar_post->telegramText(),
                 ]);
             }
             else
             {
                 $telegram->sendMessage([
                     'chat_id' => $chat_id,
-                    'text' => $divar_post->title,
+                    'text' => $divar_post->telegramText(),
                 ]);
             }
 
@@ -58,4 +58,5 @@ class TelegramBotController extends Controller
             ]);
         }
     }
+
 }
